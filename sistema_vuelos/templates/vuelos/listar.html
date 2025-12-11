@@ -1,0 +1,146 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Gestionar Vuelos{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1><i class="bi bi-airplane"></i> Gestionar Vuelos</h1>
+    </div>
+    <div class="col-md-4 text-end">
+        {% if current_user.rol in ['admin', 'responsable'] %}
+        <a href="{{ url_for('nuevo_vuelo') }}" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Nuevo Vuelo
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5><i class="bi bi-funnel"></i> Filtros</h5>
+    </div>
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-3">
+                <label for="estado" class="form-label">Estado</label>
+                <select class="form-select" id="estado" name="estado">
+                    <option value="">Todos</option>
+                    <option value="programado" {% if request.args.get('estado') == 'programado' %}selected{% endif %}>Programado</option>
+                    <option value="en_vuelo" {% if request.args.get('estado') == 'en_vuelo' %}selected{% endif %}>En Vuelo</option>
+                    <option value="aterrizado" {% if request.args.get('estado') == 'aterrizado' %}selected{% endif %}>Aterrizado</option>
+                    <option value="cancelado" {% if request.args.get('estado') == 'cancelado' %}selected{% endif %}>Cancelado</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="fecha" class="form-label">Fecha</label>
+                <input type="date" class="form-control" id="fecha" name="fecha" value="{{ request.args.get('fecha', '') }}">
+            </div>
+            <div class="col-md-3">
+                <label for="aerolinea" class="form-label">Aerolinea</label>
+                <select class="form-select" id="aerolinea" name="aerolinea">
+                    <option value="">Todas</option>
+                    {% for aerolinea in aerolineas %}
+                    <option value="{{ aerolinea.id }}" {% if request.args.get('aerolinea')|string == aerolinea.id|string %}selected{% endif %}>
+                        {{ aerolinea.codigo }} - {{ aerolinea.nombre }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-funnel"></i> Filtrar
+                </button>
+                <a href="{{ url_for('listar_vuelos') }}" class="btn btn-outline-secondary ms-2">
+                    <i class="bi bi-x-circle"></i>
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if vuelos %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Vuelo</th>
+                        <th>Aerolinea</th>
+                        <th>Origen</th>
+                        <th>Destino</th>
+                        <th>Salida</th>
+                        <th>Llegada</th>
+                        <th>Estado</th>
+                        <th>Asientos</th>
+                        <th>Reservas</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for vuelo in vuelos %}
+                    <tr>
+                        <td><strong>{{ vuelo.numero_vuelo }}</strong></td>
+                        <td>{{ vuelo.aerolinea_codigo }} - {{ vuelo.aerolinea_nombre }}</td>
+                        <td>{{ vuelo.origen }}</td>
+                        <td>{{ vuelo.destino }}</td>
+                        <td>{{ vuelo.fecha_salida.strftime('%d/%m %H:%M') }}</td>
+                        <td>{{ vuelo.fecha_llegada.strftime('%d/%m %H:%M') }}</td>
+                        <td>
+                            <span class="badge bg-{{ 
+                                'success' if vuelo.estado == 'programado' 
+                                else 'warning' if vuelo.estado == 'en_vuelo' 
+                                else 'info' if vuelo.estado == 'aterrizado' 
+                                else 'danger' 
+                            }}">
+                                {{ vuelo.estado }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="progress" style="height: 20px;">
+                                {% set porcentaje = ((vuelo.capacidad - vuelo.asientos_disponibles) / vuelo.capacidad * 100)|round %}
+                                <div class="progress-bar bg-{{ 'success' if porcentaje < 70 else 'warning' if porcentaje < 90 else 'danger' }}" 
+                                     role="progressbar" 
+                                     style="width: {{ porcentaje }}%">
+                                    {{ vuelo.capacidad - vuelo.asientos_disponibles }}/{{ vuelo.capacidad }}
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-info">{{ vuelo.reservas_count }}</span></td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a href="{{ url_for('ver_pasajeros_vuelo', id=vuelo.id) }}" class="btn btn-info" title="Ver Pasajeros">
+                                    <i class="bi bi-people"></i>
+                                </a>
+                                {% if current_user.rol in ['admin', 'responsable'] %}
+                                <a href="{{ url_for('editar_vuelo', id=vuelo.id) }}" class="btn btn-warning" title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                {% endif %}
+                                {% if current_user.rol == 'admin' %}
+                                <form method="POST" action="{{ url_for('eliminar_vuelo', id=vuelo.id) }}" class="d-inline">
+                                    <button type="submit" class="btn btn-danger" title="Eliminar"
+                                            onclick="return confirm('Esta seguro de eliminar este vuelo?')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-airplane fs-1 text-muted"></i>
+            <h4 class="text-muted mt-3">No se encontraron vuelos</h4>
+            <p>Intenta cambiar los filtros o crear un nuevo vuelo</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

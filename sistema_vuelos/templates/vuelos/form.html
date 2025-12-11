@@ -1,0 +1,109 @@
+﻿{% extends "base.html" %}
+
+{% block title %}{{ 'Editar' if vuelo else 'Nuevo' }} Vuelo{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h1>
+            <i class="bi bi-airplane"></i> 
+            {{ 'Editar' if vuelo else 'Nuevo' }} Vuelo
+        </h1>
+        <p class="lead">{{ vuelo.numero_vuelo if vuelo else '' }}</p>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5>Informacion del Vuelo</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="numero_vuelo" class="form-label">Numero de Vuelo *</label>
+                            <input type="text" class="form-control" id="numero_vuelo" name="numero_vuelo" 
+                                   value="{{ vuelo.numero_vuelo if vuelo else '' }}" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="aerolinea_id" class="form-label">Aerolinea *</label>
+                            <select class="form-select" id="aerolinea_id" name="aerolinea_id" required>
+                                <option value="">Seleccionar aerolinea...</option>
+                                {% for aerolinea in aerolineas %}
+                                <option value="{{ aerolinea.id }}" 
+                                        {% if (vuelo and vuelo.aerolinea_id == aerolinea.id) or (not vuelo and aerolinea.codigo == 'AA') %}selected{% endif %}>
+                                    {{ aerolinea.codigo }} - {{ aerolinea.nombre }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="origen" class="form-label">Origen *</label>
+                            <input type="text" class="form-control" id="origen" name="origen" 
+                                   value="{{ vuelo.origen if vuelo else '' }}" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="destino" class="form-label">Destino *</label>
+                            <input type="text" class="form-control" id="destino" name="destino" 
+                                   value="{{ vuelo.destino if vuelo else '' }}" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="fecha_salida" class="form-label">Fecha/Hora Salida *</label>
+                            <input type="datetime-local" class="form-control" id="fecha_salida" name="fecha_salida" 
+                                   value="{{ vuelo.fecha_salida.strftime('%Y-%m-%dT%H:%M') if vuelo else '' }}" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="fecha_llegada" class="form-label">Fecha/Hora Llegada *</label>
+                            <input type="datetime-local" class="form-control" id="fecha_llegada" name="fecha_llegada" 
+                                   value="{{ vuelo.fecha_llegada.strftime('%Y-%m-%dT%H:%M') if vuelo else '' }}" required>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <label for="capacidad" class="form-label">Capacidad *</label>
+                            <input type="number" class="form-control" id="capacidad" name="capacidad" 
+                                   value="{{ vuelo.capacidad if vuelo else 150 }}" min="1" required>
+                        </div>
+                        
+                        {% if vuelo %}
+                        <div class="col-md-4">
+                            <label for="asientos_disponibles" class="form-label">Asientos Disponibles *</label>
+                            <input type="number" class="form-control" id="asientos_disponibles" name="asientos_disponibles" 
+                                   value="{{ vuelo.asientos_disponibles if vuelo else vuelo.capacidad }}" min="0" required>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <label for="estado" class="form-label">Estado</label>
+                            <select class="form-select" id="estado" name="estado">
+                                <option value="programado" {% if vuelo.estado == 'programado' %}selected{% endif %}>Programado</option>
+                                <option value="en_vuelo" {% if vuelo.estado == 'en_vuelo' %}selected{% endif %}>En Vuelo</option>
+                                <option value="aterrizado" {% if vuelo.estado == 'aterrizado' %}selected{% endif %}>Aterrizado</option>
+                                <option value="cancelado" {% if vuelo.estado == 'cancelado' %}selected{% endif %}>Cancelado</option>
+                            </select>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('listar_vuelos') }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> {{ 'Actualizar' if vuelo else 'Crear' }} Vuelo
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,125 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Reservas{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1><i class="bi bi-ticket-perforated"></i> Reservas</h1>
+    </div>
+    <div class="col-md-4 text-end">
+        {% if current_user.rol in ['admin', 'responsable', 'empleado'] %}
+        <a href="{{ url_for('nueva_reserva') }}" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Nueva Reserva
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5><i class="bi bi-funnel"></i> Filtros</h5>
+    </div>
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-4">
+                <label for="estado" class="form-label">Estado</label>
+                <select class="form-select" id="estado" name="estado">
+                    <option value="">Todos</option>
+                    <option value="confirmada" {% if request.args.get('estado') == 'confirmada' %}selected{% endif %}>Confirmada</option>
+                    <option value="cancelada" {% if request.args.get('estado') == 'cancelada' %}selected{% endif %}>Cancelada</option>
+                    <option value="check-in" {% if request.args.get('estado') == 'check-in' %}selected{% endif %}>Check-in</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="fecha" class="form-label">Fecha de Reserva</label>
+                <input type="date" class="form-control" id="fecha" name="fecha" value="{{ request.args.get('fecha', '') }}">
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-funnel"></i> Filtrar
+                </button>
+                <a href="{{ url_for('listar_reservas') }}" class="btn btn-outline-secondary ms-2">
+                    <i class="bi bi-x-circle"></i>
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if reservas %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Codigo</th>
+                        <th>Vuelo</th>
+                        <th>Pasajero</th>
+                        <th>Fecha Reserva</th>
+                        <th>Asiento</th>
+                        <th>Clase</th>
+                        <th>Precio</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reserva in reservas %}
+                    <tr>
+                        <td><code>{{ reserva.codigo_reserva }}</code></td>
+                        <td>
+                            <strong>{{ reserva.numero_vuelo }}</strong><br>
+                            <small>{{ reserva.origen }} ? {{ reserva.destino }}</small><br>
+                            <small>{{ reserva.fecha_salida.strftime('%d/%m %H:%M') }}</small>
+                        </td>
+                        <td>
+                            {{ reserva.pasajero_nombre }} {{ reserva.pasajero_apellido }}<br>
+                            <small class="text-muted">{{ reserva.pasaporte }}</small>
+                        </td>
+                        <td>{{ reserva.fecha_reserva.strftime('%d/%m %H:%M') }}</td>
+                        <td><span class="badge bg-secondary">{{ reserva.asiento if reserva.asiento else 'N/A' }}</span></td>
+                        <td>
+                            <span class="badge bg-{{ 'warning' if reserva.clase == 'economica' else 'info' if reserva.clase == 'ejecutiva' else 'success' }}">
+                                {{ reserva.clase }}
+                            </span>
+                        </td>
+                        <td>${{ "%.2f"|format(reserva.precio) if reserva.precio else '0.00' }}</td>
+                        <td>
+                            <span class="badge bg-{{ 
+                                'success' if reserva.estado == 'confirmada' 
+                                else 'danger' if reserva.estado == 'cancelada' 
+                                else 'info' 
+                            }}">
+                                {{ reserva.estado }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                {% if reserva.estado == 'confirmada' and current_user.rol in ['admin', 'responsable', 'empleado'] %}
+                                <form method="POST" action="{{ url_for('cancelar_reserva', id=reserva.id) }}" class="d-inline">
+                                    <button type="submit" class="btn btn-danger" title="Cancelar"
+                                            onclick="return confirm('Esta seguro de cancelar esta reserva?')">
+                                        <i class="bi bi-x-circle"></i>
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-ticket-perforated fs-1 text-muted"></i>
+            <h4 class="text-muted mt-3">No se encontraron reservas</h4>
+            <p>Intenta cambiar los filtros o crear una nueva reserva</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

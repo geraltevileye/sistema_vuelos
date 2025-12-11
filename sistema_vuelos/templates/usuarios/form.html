@@ -1,0 +1,77 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Nuevo Usuario{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h1><i class="bi bi-person-plus"></i> Nuevo Usuario</h1>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5>Informacion del Usuario</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="username" class="form-label">Nombre de Usuario *</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                            <div class="form-text">Nombre unico para iniciar sesion</div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="password" class="form-label">Contrasena *</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                            <div class="form-text">Minimo 6 caracteres</div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="nombre" class="form-label">Nombre Completo *</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email">
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <label for="rol" class="form-label">Rol *</label>
+                            <select class="form-select" id="rol" name="rol" required>
+                                <option value="">Seleccionar rol...</option>
+                                <option value="admin">Administrador (Control total)</option>
+                                <option value="responsable">Responsable (Gestionar sin borrado masivo)</option>
+                                <option value="empleado">Empleado (Operaciones basicas)</option>
+                                <option value="consulta">Consulta (Solo lectura)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i> 
+                        <strong>Importante:</strong> Los permisos de cada rol estan predefinidos en el sistema.
+                        Asegurate de asignar el rol correcto segun las responsabilidades del usuario.
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('listar_usuarios') }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> Crear Usuario
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,79 @@
+﻿{% extends "base.html" %}
+
+{% block title %}{{ 'Editar' if aerolinea else 'Nueva' }} Aerolinea{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h1>
+            <i class="bi bi-building"></i> 
+            {{ 'Editar' if aerolinea else 'Nueva' }} Aerolinea
+        </h1>
+        <p class="lead">{{ aerolinea.nombre if aerolinea else '' }}</p>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5>Informacion de la Aerolinea</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="codigo" class="form-label">Codigo IATA *</label>
+                            <input type="text" class="form-control" id="codigo" name="codigo" 
+                                   value="{{ aerolinea.codigo if aerolinea else '' }}" maxlength="3" required>
+                            <div class="form-text">Codigo de 3 letras (ej: AA, DL, UA)</div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="nombre" class="form-label">Nombre *</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" 
+                                   value="{{ aerolinea.nombre if aerolinea else '' }}" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="pais_origen" class="form-label">Pais de Origen</label>
+                            <input type="text" class="form-control" id="pais_origen" name="pais_origen" 
+                                   value="{{ aerolinea.pais_origen if aerolinea else '' }}">
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="fecha_fundacion" class="form-label">Fecha de Fundacion</label>
+                            <input type="date" class="form-control" id="fecha_fundacion" name="fecha_fundacion" 
+                                   value="{{ aerolinea.fecha_fundacion if aerolinea and aerolinea.fecha_fundacion else '' }}">
+                        </div>
+                        
+                        {% if aerolinea %}
+                        <div class="col-md-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="activa" name="activa" 
+                                       {% if aerolinea.activa %}checked{% endif %}>
+                                <label class="form-check-label" for="activa">
+                                    Aerolinea Activa
+                                </label>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('listar_aerolineas') }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> {{ 'Actualizar' if aerolinea else 'Crear' }} Aerolinea
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

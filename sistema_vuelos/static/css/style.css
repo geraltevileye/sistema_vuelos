@@ -1,0 +1,226 @@
+/* Estilos personalizados para el Sistema de Vuelos */
+
+:root {
+    --primary-color: #0d6efd;
+    --secondary-color: #6c757d;
+    --success-color: #198754;
+    --info-color: #0dcaf0;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin-bottom: 1.5rem;
+    border-radius: 0.5rem;
+}
+
+.card-header {
+    background-color: rgba(0, 0, 0, 0.03);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 0.5rem 0.5rem 0 0 !important;
+    font-weight: 600;
+}
+
+.btn {
+    border-radius: 0.375rem;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+.table th {
+    font-weight: 600;
+    background-color: var(--light-color);
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.075);
+}
+
+.badge {
+    font-weight: 500;
+    padding: 0.35em 0.65em;
+}
+
+.progress {
+    height: 20px;
+    border-radius: 0.375rem;
+}
+
+.progress-bar {
+    border-radius: 0.375rem;
+}
+
+.alert {
+    border: none;
+    border-radius: 0.5rem;
+}
+
+.alert-dismissible .btn-close {
+    padding: 1rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.footer {
+    margin-top: auto;
+    padding: 1rem 0;
+}
+
+/* Estilos para los cards del dashboard */
+.card .bi {
+    font-size: 2.5rem;
+    opacity: 0.8;
+}
+
+/* Estilos para las tablas */
+.table-responsive {
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+/* Estilos para modales */
+.modal-content {
+    border-radius: 0.5rem;
+    border: none;
+}
+
+.modal-header {
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.modal-header .btn-close {
+    filter: invert(1);
+}
+
+/* Estilos para los estados */
+.status-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.status-programado {
+    background-color: #d1e7dd;
+    color: #0f5132;
+}
+
+.status-en_vuelo {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-aterrizado {
+    background-color: #cff4fc;
+    color: #055160;
+}
+
+.status-cancelado {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .navbar-nav .dropdown-menu {
+        position: static;
+        float: none;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+}
+
+/* Estilos para el login */
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.login-card {
+    width: 100%;
+    max-width: 400px;
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Estilos para los tooltips */
+.tooltip-inner {
+    border-radius: 0.375rem;
+    padding: 0.375rem 0.75rem;
+}
+
+/* Estilos para los badges de rol */
+.role-badge-admin {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.role-badge-responsable {
+    background-color: var(--warning-color);
+    color: var(--dark-color);
+}
+
+.role-badge-empleado {
+    background-color: var(--info-color);
+    color: white;
+}
+
+.role-badge-consulta {
+    background-color: var(--secondary-color);
+    color: white;
+}

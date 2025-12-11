@@ -1,0 +1,85 @@
+﻿{% extends "base.html" %}
+
+{% block title %}{{ 'Editar' if pasajero else 'Nuevo' }} Pasajero{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h1>
+            <i class="bi bi-person"></i> 
+            {{ 'Editar' if pasajero else 'Nuevo' }} Pasajero
+        </h1>
+        <p class="lead">{{ pasajero.nombre if pasajero else '' }} {{ pasajero.apellido if pasajero else '' }}</p>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5>Informacion Personal</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="pasaporte" class="form-label">Pasaporte *</label>
+                            <input type="text" class="form-control" id="pasaporte" name="pasaporte" 
+                                   value="{{ pasajero.pasaporte if pasajero else '' }}" required>
+                            <div class="form-text">Numero de pasaporte unico</div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="nacionalidad" class="form-label">Nacionalidad</label>
+                            <input type="text" class="form-control" id="nacionalidad" name="nacionalidad" 
+                                   value="{{ pasajero.nacionalidad if pasajero else '' }}">
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="nombre" class="form-label">Nombre *</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" 
+                                   value="{{ pasajero.nombre if pasajero else '' }}" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="apellido" class="form-label">Apellido *</label>
+                            <input type="text" class="form-control" id="apellido" name="apellido" 
+                                   value="{{ pasajero.apellido if pasajero else '' }}" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
+                            <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" 
+                                   value="{{ pasajero.fecha_nacimiento if pasajero else '' }}">
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="telefono" class="form-label">Telefono</label>
+                            <input type="tel" class="form-control" id="telefono" name="telefono" 
+                                   value="{{ pasajero.telefono if pasajero else '' }}">
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" 
+                                   value="{{ pasajero.email if pasajero else '' }}">
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('listar_pasajeros') }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> {{ 'Actualizar' if pasajero else 'Crear' }} Pasajero
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

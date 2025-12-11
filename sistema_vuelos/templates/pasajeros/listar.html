@@ -1,0 +1,108 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Gestionar Pasajeros{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1><i class="bi bi-people"></i> Gestionar Pasajeros</h1>
+    </div>
+    <div class="col-md-4 text-end">
+        {% if current_user.rol in ['admin', 'responsable', 'empleado'] %}
+        <a href="{{ url_for('nuevo_pasajero') }}" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Nuevo Pasajero
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5><i class="bi bi-search"></i> Buscar Pasajeros</h5>
+    </div>
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-10">
+                <input type="text" class="form-control" id="busqueda" name="busqueda" 
+                       placeholder="Buscar por nombre, apellido, pasaporte o email..." 
+                       value="{{ request.args.get('busqueda', '') }}">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-search"></i> Buscar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if pasajeros %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Pasaporte</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Nacionalidad</th>
+                        <th>Email</th>
+                        <th>Telefono</th>
+                        <th>Reservas</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pasajero in pasajeros %}
+                    <tr>
+                        <td><code>{{ pasajero.pasaporte }}</code></td>
+                        <td>{{ pasajero.nombre }}</td>
+                        <td>{{ pasajero.apellido }}</td>
+                        <td>
+                            <span class="badge bg-info">{{ pasajero.nacionalidad if pasajero.nacionalidad else 'N/A' }}</span>
+                        </td>
+                        <td>{{ pasajero.email if pasajero.email else 'N/A' }}</td>
+                        <td>{{ pasajero.telefono if pasajero.telefono else 'N/A' }}</td>
+                        <td>
+                            <span class="badge bg-{{ 'success' if pasajero.total_reservas > 0 else 'secondary' }}">
+                                {{ pasajero.total_reservas }}
+                            </span>
+                            {% if pasajero.ultima_reserva %}
+                            <br>
+                            <small class="text-muted">{{ pasajero.ultima_reserva.strftime('%d/%m/%y') }}</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                {% if current_user.rol in ['admin', 'responsable', 'empleado'] %}
+                                <a href="{{ url_for('editar_pasajero', id=pasajero.id) }}" class="btn btn-warning" title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                {% endif %}
+                                {% if current_user.rol == 'admin' %}
+                                <form method="POST" action="{{ url_for('eliminar_pasajero', id=pasajero.id) }}" class="d-inline">
+                                    <button type="submit" class="btn btn-danger" title="Eliminar"
+                                            onclick="return confirm('Esta seguro de eliminar este pasajero?')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-people fs-1 text-muted"></i>
+            <h4 class="text-muted mt-3">No se encontraron pasajeros</h4>
+            <p>Intenta cambiar la busqueda o crear un nuevo pasajero</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,86 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Aerolineas{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1><i class="bi bi-building"></i> Aerolineas</h1>
+    </div>
+    <div class="col-md-4 text-end">
+        {% if current_user.rol in ['admin', 'responsable'] %}
+        <a href="{{ url_for('nueva_aerolinea') }}" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Nueva Aerolinea
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if aerolineas %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Codigo</th>
+                        <th>Nombre</th>
+                        <th>Pais Origen</th>
+                        <th>Fecha Fundacion</th>
+                        <th>Vuelos</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for aerolinea in aerolineas %}
+                    <tr>
+                        <td><strong>{{ aerolinea.codigo }}</strong></td>
+                        <td>{{ aerolinea.nombre }}</td>
+                        <td>{{ aerolinea.pais_origen if aerolinea.pais_origen else 'N/A' }}</td>
+                        <td>{{ aerolinea.fecha_fundacion.strftime('%d/%m/%Y') if aerolinea.fecha_fundacion else 'N/A' }}</td>
+                        <td>
+                            <span class="badge bg-{{ 'info' if aerolinea.total_vuelos > 0 else 'secondary' }}">
+                                {{ aerolinea.total_vuelos }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if aerolinea.activa %}
+                            <span class="badge bg-success">Activa</span>
+                            {% else %}
+                            <span class="badge bg-danger">Inactiva</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                {% if current_user.rol in ['admin', 'responsable'] %}
+                                <a href="{{ url_for('editar_aerolinea', id=aerolinea.id) }}" class="btn btn-warning" title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                {% endif %}
+                                {% if current_user.rol == 'admin' %}
+                                <form method="POST" action="{{ url_for('eliminar_aerolinea', id=aerolinea.id) }}" class="d-inline">
+                                    <button type="submit" class="btn btn-danger" title="Eliminar"
+                                            onclick="return confirm('Esta seguro de eliminar esta aerolinea?')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-building fs-1 text-muted"></i>
+            <h4 class="text-muted mt-3">No se encontraron aerolineas</h4>
+            <p>Crear una nueva aerolinea para comenzar</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
