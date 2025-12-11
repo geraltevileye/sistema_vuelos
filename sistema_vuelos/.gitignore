@@ -1,38 +1,68 @@
-﻿# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-env/
-venv/
-.venv/
-.pytest_cache/
+﻿# Archivos del sistema
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
 
-# Database
-*.sqlite3
-*.db
-
-# Logs
-*.log
-logs/
-
-# Environment
+# Archivos de entorno
 .env
 .env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# IDE
+# Archivos de IDE/Editor
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# OS
-.DS_Store
-Thumbs.db
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
-# Instance
-instance/
+# Archivos de sistema operativo
+NTUSER.*
+ntuser.*
+*.regtrans-ms
+*.blf
+*.log1
+*.log2
 
-# Render
-.render.yaml
+# Directorios personales
+Desktop/
+Downloads/
+Documents/
+Music/
+Pictures/
+Videos/
+3D Objects/
+AppData/
+Contacts/
+Favorites/
+Links/
+Saved Games/
+Searches/
+OneDrive/
+
+# Archivos ejecutables
+*.exe
+*.msi
+*.7z
+
+# Archivos temporales
+temp*
+tmp*
+
+# Base de datos
+*.db
+*.sqlite
+*.sqlite3
