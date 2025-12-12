@@ -1,68 +1,46 @@
-﻿# Archivos del sistema
-.DS_Store
-Thumbs.db
-*.tmp
-*.temp
-
-# Archivos de entorno
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# Archivos de IDE/Editor
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Archivos de Python
+# Python
 __pycache__/
 *.py[cod]
-*.class
+*$py.class
 *.so
 .Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Environments
+.env
+.venv
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
 
-# Archivos de sistema operativo
-NTUSER.*
-ntuser.*
-*.regtrans-ms
-*.blf
-*.log1
-*.log2
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
 
-# Directorios personales
-Desktop/
-Downloads/
-Documents/
-Music/
-Pictures/
-Videos/
-3D Objects/
-AppData/
-Contacts/
-Favorites/
-Links/
-Saved Games/
-Searches/
-OneDrive/
+# OS
+.DS_Store
+Thumbs.db
 
-# Archivos ejecutables
-*.exe
-*.msi
-*.7z
+# Logs
+*.log
 
-# Archivos temporales
-temp*
-tmp*
-
-# Base de datos
-*.db
-*.sqlite
-*.sqlite3
+# Render
+*.render.yaml
