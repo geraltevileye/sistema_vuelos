@@ -1,28 +1,26 @@
 import psycopg2
 import os
-from dotenv import load_dotenv
 import bcrypt
-
-load_dotenv()
+from datetime import datetime
 
 def crear_tablas():
     try:
-        # Conexión usando variables de entorno
+        # Conexión a la base de datos de Render
         conn = psycopg2.connect(
             host=os.environ.get('DB_HOST'),
             database=os.environ.get('DB_NAME'),
             user=os.environ.get('DB_USER'),
             password=os.environ.get('DB_PASSWORD'),
-            port=os.environ.get('DB_PORT', 5432)
+            port=os.environ.get('DB_PORT', 5432),
+            sslmode='require'
         )
         
         conn.autocommit = True
         cur = conn.cursor()
         
-        print("🔄 Creando tablas...")
+        print("🔄 Creando tablas en la base de datos de Render...")
         
         # 1. Tabla usuarios
-        print("📋 Creando tabla 'usuarios'...")
         cur.execute('''
             CREATE TABLE IF NOT EXISTS usuarios (
                 id SERIAL PRIMARY KEY,
@@ -35,9 +33,9 @@ def crear_tablas():
                 fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         ''')
+        print("✅ Tabla 'usuarios' creada")
         
         # 2. Tabla aerolineas
-        print("📋 Creando tabla 'aerolineas'...")
         cur.execute('''
             CREATE TABLE IF NOT EXISTS aerolineas (
                 id SERIAL PRIMARY KEY,
@@ -48,9 +46,9 @@ def crear_tablas():
                 activa BOOLEAN DEFAULT TRUE
             )
         ''')
+        print("✅ Tabla 'aerolineas' creada")
         
         # 3. Tabla vuelos
-        print("📋 Creando tabla 'vuelos'...")
         cur.execute('''
             CREATE TABLE IF NOT EXISTS vuelos (
                 id SERIAL PRIMARY KEY,
@@ -67,9 +65,9 @@ def crear_tablas():
                 CONSTRAINT chk_fechas CHECK (fecha_salida < fecha_llegada)
             )
         ''')
+        print("✅ Tabla 'vuelos' creada")
         
         # 4. Tabla pasajeros
-        print("📋 Creando tabla 'pasajeros'...")
         cur.execute('''
             CREATE TABLE IF NOT EXISTS pasajeros (
                 id SERIAL PRIMARY KEY,
@@ -82,9 +80,9 @@ def crear_tablas():
                 email VARCHAR(100)
             )
         ''')
+        print("✅ Tabla 'pasajeros' creada")
         
         # 5. Tabla reservas
-        print("📋 Creando tabla 'reservas'...")
         cur.execute('''
             CREATE TABLE IF NOT EXISTS reservas (
                 id SERIAL PRIMARY KEY,
@@ -99,9 +97,9 @@ def crear_tablas():
                 UNIQUE(vuelo_id, pasajero_id)
             )
         ''')
+        print("✅ Tabla 'reservas' creada")
         
         # 6. Tabla logs
-        print("📋 Creando tabla 'logs_auditoria'...")
         cur.execute('''
             CREATE TABLE IF NOT EXISTS logs_auditoria (
                 id SERIAL PRIMARY KEY,
@@ -114,19 +112,17 @@ def crear_tablas():
                 ip_address VARCHAR(45)
             )
         ''')
+        print("✅ Tabla 'logs_auditoria' creada")
         
         # Crear índices
-        print("📊 Creando índices...")
         cur.execute('CREATE INDEX IF NOT EXISTS idx_vuelos_fecha ON vuelos(fecha_salida)')
         cur.execute('CREATE INDEX IF NOT EXISTS idx_reservas_vuelo ON reservas(vuelo_id)')
         cur.execute('CREATE INDEX IF NOT EXISTS idx_reservas_pasajero ON reservas(pasajero_id)')
         cur.execute('CREATE INDEX IF NOT EXISTS idx_logs_fecha ON logs_auditoria(fecha_hora)')
         cur.execute('CREATE INDEX IF NOT EXISTS idx_logs_usuario ON logs_auditoria(usuario_id)')
+        print("✅ Índices creados")
         
-        # Insertar datos de ejemplo
-        print("👥 Insertando datos de ejemplo...")
-        
-        # Aerolíneas de ejemplo
+        # Insertar aerolíneas de ejemplo
         aerolineas = [
             ('AA', 'American Airlines', 'Estados Unidos', '1930-04-15'),
             ('DL', 'Delta Air Lines', 'Estados Unidos', '1924-05-30'),
@@ -141,8 +137,9 @@ def crear_tablas():
                 VALUES (%s, %s, %s, %s)
                 ON CONFLICT (codigo) DO NOTHING
             ''', (codigo, nombre, pais, fecha))
+        print("✅ Aerolíneas insertadas")
         
-        # Usuarios por defecto
+        # Insertar usuarios por defecto
         usuarios = [
             ('admin', 'admin123', 'Administrador Principal', 'admin'),
             ('responsable', 'responsable123', 'Responsable de Operaciones', 'responsable'),
@@ -151,7 +148,6 @@ def crear_tablas():
         ]
         
         for username, password, nombre, rol in usuarios:
-            # Verificar si el usuario ya existe
             cur.execute("SELECT COUNT(*) FROM usuarios WHERE username = %s", (username,))
             if cur.fetchone()[0] == 0:
                 password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
@@ -159,10 +155,9 @@ def crear_tablas():
                     INSERT INTO usuarios (username, password_hash, nombre, rol)
                     VALUES (%s, %s, %s, %s)
                 ''', (username, password_hash, nombre, rol))
-                print(f"  ✅ Usuario '{username}' creado")
+        print("✅ Usuarios insertados")
         
-        # Vuelos de ejemplo
-        print("✈️ Insertando vuelos de ejemplo...")
+        # Insertar vuelos de ejemplo
         vuelos = [
             ('AA245', 1, 'MIA', 'JFK', '2025-01-15 08:00:00', '2025-01-15 11:00:00', 150, 140),
             ('DL789', 2, 'ATL', 'LAX', '2025-01-15 10:30:00', '2025-01-15 13:45:00', 180, 160),
@@ -178,16 +173,17 @@ def crear_tablas():
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                 ON CONFLICT DO NOTHING
             ''', (num_vuelo, aerolinea_id, origen, destino, salida, llegada, capacidad, disponibles))
+        print("✅ Vuelos insertados")
         
         cur.close()
         conn.close()
         
-        print("✅ ¡Base de datos inicializada exitosamente!")
-        print("\n📋 Usuarios disponibles:")
-        print("   admin / admin123")
-        print("   responsable / responsable123")
-        print("   empleado / empleado123")
-        print("   consulta / consulta123")
+        print("\n🎉 ¡Base de datos inicializada exitosamente en Render!")
+        print("\n🔑 Credenciales para iniciar sesión:")
+        print("   👤 admin / admin123")
+        print("   👤 responsable / responsable123")
+        print("   👤 empleado / empleado123")
+        print("   👤 consulta / consulta123")
         
     except Exception as e:
         print(f"❌ Error: {e}")
