@@ -25,8 +25,7 @@ login_manager.login_view = 'login'
 
 # Conexion a la base de datos
 def get_db_connection():
-    return psycopg2.connect('postgresql://yova:dt4vax6PavE7pLUXrz80hoZ017Srdx1A@dpg-d4t8guruibrs73cdft8g-a.ohio-postgres.render.com/sistema_gvqe')
-
+    return psycopg2.connect('postgresql://yova:j0smlHpbZTp1qgZsruJUHI9XW7Gv9gtt@dpg-d4u0hcfgi27c73a9b4rg-a.virginia-postgres.render.com/sistema_2tdl')
 class User(UserMixin):
     def __init__(self, id, username, nombre, rol):
         self.id = id
