@@ -1,23 +1,29 @@
 services:
   - type: web
-    name: sistema-gestion-vuelos
+    name: sistema-vuelos
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
     envVars:
-      # CAMBIA ESTO: Usar tu nueva BD manual
-      - key: DATABASE_URL
-        value: postgresql://yova:j0smlHpbZTp1qgZsruJUHI9XW7Gv9gtt@dpg-d4u0hcfgi27c73a9b4rg-a.virginia-postgres.render.com/sistema_2tdl
       - key: SECRET_KEY
         generateValue: true
-    healthCheckPath: /dashboard
+      - key: DB_HOST
+        fromDatabase:
+          name: sistema_2tdl
+          property: host
+      - key: DB_PORT
+        value: 5432
+      - key: DB_NAME
+        fromDatabase:
+          name: sistema_2tdl
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: sistema_2tdl
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: sistema_2tdl
+          property: password
+    healthCheckPath: /login
     autoDeploy: true
-    domains:
-      - sistema-vuelos.onrender.com
-
-
- databases:
-   - name: sistema_gvqe
-     databaseName: sistema_gvqe
-     user: yova
-     plan: free
