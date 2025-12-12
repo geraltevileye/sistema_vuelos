@@ -4,18 +4,12 @@ services:
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
+    envVars:services:
+  - type: web
+    name: sistema-vuelos-simple
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
     envVars:
-      - key: DATABASE_URL
-        fromDatabase:
-          name: vuelos_db
-          property: connectionString
       - key: RENDER
         value: true
-    autoDeploy: true
-
-databases:
-  - name: vuelos_db
-    databaseName: vuelos
-    user: vuelos_user
-    plan: free
-    
