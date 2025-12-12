@@ -5,21 +5,17 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
     envVars:
-      - key: SECRET_KEY
-        generateValue: true
-      - key: DB_HOST
+      - key: DATABASE_URL
         fromDatabase:
-          name: sistema_2tdl
-          property: host
-      - key: DB_NAME
-        fromDatabase:
-          name: sistema_2tdl
-          property: database
-      - key: DB_USER
-        fromDatabase:
-          name: sistema_2tdl
-          property: user
-      - key: DB_PASSWORD
-        fromDatabase:
-          name: sistema_2tdl
-          property: password
+          name: vuelos_db
+          property: connectionString
+      - key: RENDER
+        value: true
+    autoDeploy: true
+
+databases:
+  - name: vuelos_db
+    databaseName: vuelos
+    user: vuelos_user
+    plan: free
+    
