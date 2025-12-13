@@ -16,6 +16,26 @@ import string
 from functools import wraps
 from dotenv import load_dotenv
 
+# Configuración para Render - AGREGAR ESTO
+import os
+if 'RENDER' in os.environ:
+    # En Render, usar la URL de la base de datos
+    DATABASE_URL = "postgresql://yova:j0smlHpbZTp1qgZsruJUHI9XW7Gv9gtt@dpg-d4u0hcfgi27c73a9b4rg-a.virginia-postgres.render.com/sistema_2tdl"
+else:
+    # En desarrollo local
+    DATABASE_URL = "postgresql://localhost/sistema_vuelos"
+
+# Reemplazar la función get_db_connection con esta versión:
+def get_db_connection():
+    try:
+        if 'RENDER' in os.environ:
+            conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+        else:
+            conn = psycopg2.connect(DATABASE_URL)
+        return conn
+    except Exception as e:
+        print(f"❌ Error de conexión: {e}")
+        raise
 # ==================== CONFIGURACIÓN INICIAL ====================
 
 # Cargar variables de entorno
