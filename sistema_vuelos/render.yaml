@@ -4,12 +4,6 @@ services:
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
-    envVars:services:
-  - type: web
-    name: sistema-vuelos-simple
-    env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
     envVars:
       - key: RENDER
         value: true
